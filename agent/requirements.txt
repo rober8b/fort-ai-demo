@@ -1,0 +1,4 @@
+livekit-agents[deepgram,elevenlabs]~=1.5
+livekit-plugins-groq
+livekit-plugins-liveavatar
+python-dotenv
