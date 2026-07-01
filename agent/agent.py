@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -46,7 +47,11 @@ async def entrypoint(ctx: JobContext):
             text = item.text_content
             if text:
                 payload = json.dumps({"type": "avatar_speak", "text": text}).encode()
-                ctx.room.local_participant.publish_data(payload, reliable=True)
+                # publish_data es una corrutina: hay que schedularla en el loop,
+                # si no el mensaje nunca se envia al frontend (avatar no habla).
+                asyncio.create_task(
+                    ctx.room.local_participant.publish_data(payload, reliable=True)
+                )
 
     await session.start(
         agent=Agent(instructions=SYSTEM_PROMPT),
